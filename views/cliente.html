@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bora Viver - Área do Cliente</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        /* Estilos específicos do Dashboard do Cliente de Última Geração */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-blue: #0082A3;
+            --neon-pink: #B4006E;
+            --sun-yellow: #FFCC00;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 10%, #002b37 0%, #090005 100%) !important;
+            overflow-y: auto !important;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px; /* Espaço para a barra mobile inferior */
+        }
+
+        /* Header de Boas-Vindas */
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+        }
+
+        .user-profile-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar-glow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 130, 163, 0.5);
+        }
+
+        /* Grid de Funções Principais */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .service-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .service-card:hover, .service-card.active-tab {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 20px rgba(0, 130, 163, 0.2);
+        }
+
+        .service-card i {
+            font-size: 2rem;
+            color: var(--sun-yellow);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Seções Dinâmicas (Abas) */
+        .dashboard-section {
+            display: none; /* Controlado via JS */
+            animation: fadeInSection 0.4s ease forwards;
+        }
+
+        .dashboard-section.active-section {
+            display: block;
+        }
+
+        /* Cards de Passagens e Hospedagens (Modo Ticket/Voo) */
+        .ticket-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+        }
+
+        .ticket-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--neon-blue);
+        }
+
+        .ticket-route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .route-airport h3 { font-size: 1.8rem; margin: 0; font-weight: 800; }
+        .route-airport p { margin: 2px 0 0 0; color: #94a3b8; font-size: 0.85rem; }
+
+        .route-line {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0 20px;
+            border-top: 2px dashed rgba(255,255,255,0.2);
+        }
+
+        .route-line i {
+            position: absolute;
+            background: #06131d;
+            padding: 0 8px;
+            color: var(--neon-blue);
+        }
+
+        /* Feed de Promoções Conectadas ao Admin */
+        .promo-banner {
+            background: linear-gradient(90deg, rgba(180, 0, 110, 0.2) 0%, rgba(0, 130, 163, 0.2) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .promo-tag {
+            background: var(--neon-pink);
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Menu de Navegação Inferior Estilo App Mobile */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background: rgba(10, 25, 36, 0.8);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            padding: 12px 25px;
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 999;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        .nav-item {
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            gap: 4px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item i { font-size: 1.3rem; }
+        .nav-item.active-nav { color: var(--sun-yellow); }
+
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <header class="client-header">
+            <div class="user-profile-box">
+                <div class="avatar-glow" id="user-avatar">U</div>
+                <div>
+                    <p style="margin: 0; color: #94a3b8; font-size: 0.85rem;">Bem-vindo de volta,</p>
+                    <h2 style="margin: 0; font-size: 1.25rem;" id="user-name">Carregando...</h2>
+                </div>
+            </div>
+            <button onclick="deslogarCliente()" class="btn-floating btn-secondary" style="padding: 8px 18px; font-size: 0.8rem;">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </button>
+        </header>
+
+        <nav class="services-grid">
+            <div class="service-card active-tab" onclick="mudarAba('voos', this)">
+                <i class="fa-solid fa-plane"></i>
+                <span>Voos</span>
+            </div>
+            <div class="service-card" onclick="mudarAba('hospedagens', this)">
+                <i class="fa-solid fa-hotel"></i>
+                <span>Hotéis</span>
+            </div>
+            <div class="service-card" onclick="mudarAba('promocoes', this)">
+                <i class="fa-solid fa-fire"></i>
+                <span>Ofertas</span>
+            </div>
+            <div class="service-card" onclick="mudarAba('perfil', this)">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Minhas Viagens</span>
+            </div>
+        </nav>
+
+        <section id="sec-voos" class="dashboard-section active-section">
+            <h2 style="margin-bottom: 20px; font-size: 1.4rem;"><i class="fa-solid fa-plane-departure" style="color: var(--neon-blue)"></i> Próximos Voos Disponíveis</h2>
+            <div id="lista-voos-dinamica">
+                <p style="color: #94a3b8;">Buscando melhores tarifas em tempo real...</p>
+            </div>
+        </section>
+
+        <section id="sec-hospedagens" class="dashboard-section">
+            <h2 style="margin-bottom: 20px; font-size: 1.4rem;"><i class="fa-solid fa-bed" style="color: var(--neon-blue)"></i> Resorts e Hotéis Recomendados</h2>
+            <div id="lista-hospedagens-dinamica">
+                </div>
+        </section>
+
+        <section id="sec-promocoes" class="dashboard-section">
+            <h2 style="margin-bottom: 20px; font-size: 1.4rem;"><i class="fa-solid fa-bolt" style="color: var(--sun-yellow)"></i> Alertas de Tarifa Errada e Cupons</h2>
+            <div id="lista-promos-dinamica">
+                </div>
+        </section>
+
+        <section id="sec-perfil" class="dashboard-section">
+            <h2 style="margin-bottom: 20px; font-size: 1.4rem;"><i class="fa-solid fa-ticket" style="color: var(--neon-pink)"></i> Seus Bilhetes e Vouchers Ativos</h2>
+            <div id="lista-reservas-cliente">
+                <p style="color: #94a3b8;">Nenhum bilhete emitido para os próximos dias.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="bottom-nav">
+        <a class="nav-item active-nav" onclick="mudarAbaInferior('voos')"><i class="fa-solid fa-compass"></i>Explorar</a>
+        <a class="nav-item" onclick="mudarAbaInferior('promocoes')"><i class="fa-solid fa-tags"></i>Promoções</a>
+        <a class="nav-item" onclick="mudarAbaInferior('perfil')"><i class="fa-solid fa-suitcase"></i>Minhas Viagens</a>
+        <a class="nav-item" id="nav-btn-suporte" target="_blank"><i class="fa-solid fa-headset"></i>Suporte</a>
+    </div>
+
+    <script>
+        // Configurações iniciais do Supabase (Substituiremos pelas chaves reais logo a seguir)
+        const SUPABASE_URL = "https://uwslswyfgldimziklonb.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_PY98ZRigGjq79YtgiVjMUA_TXOiVhan";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            verificarAutenticacao();
+            carregarLinksSuporteAdmin();
+            
+            // Ativa os canais de escuta em tempo real (Realtime Broadcast)
+            escutarBancoEmTempoReal();
+        });
+
+        // 1. Controle de Sessão e Trava de Segurança
+        async function verificarAutenticacao() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                // Se não estiver logado, chuta de volta para a tela de login
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Define o nome do cliente na interface
+            const nomeUsuario = session.user.user_metadata.full_name || session.user.email;
+            document.getElementById('user-name').innerText = nomeUsuario;
+            document.getElementById('user-avatar').innerText = nomeUsuario.charAt(0).toUpperCase();
+
+            // Carrega dados específicos do usuário
+            carregarReservasDoCliente(session.user.id);
+        }
+
+        // 2. Transição de Abas Premium
+        function mudarAba(abaId, elementoCard) {
+            document.querySelectorAll('.dashboard-section').forEach(sec => sec.classList.remove('active-section'));
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('active-tab'));
+            
+            document.getElementById(`sec-${abaId}`).classList.add('active-section');
+            if(elementoCard) elementoCard.classList.add('active-tab');
+        }
+
+        function mudarAbaInferior(abaId) {
+            mudarAba(abaId, null);
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
+            // Procura o item correspondente para acender a luz amarela
+            event.currentTarget.classList.add('active-nav');
+        }
+
+        // 3. Sincronização em Tempo Real (O Coração do App)
+        function escutarBancoEmTempoReal() {
+            // Escuta modificações na tabela de Voos
+            supabase.channel('custom-filter-channel')
+            .on('postgres_changes', { event: '*', filter: 'status=eq.ativo', schema: 'public', table: 'voos' }, () => {
+                renderizarVoos();
+            }).subscribe();
+
+            // Escuta modificações na tabela de Promoções feitas pelo Admin
+            supabase.channel('room-promos')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'promocoes' }, () => {
+                renderizarPromocoes();
+            }).subscribe();
+
+            // Executa a primeira carga de renderização
+            renderizarVoos();
+            renderizarPromocoes();
+        }
+
+        // 4. Conectores de Renderização Dinâmica (Geradores de HTML)
+        // Busca os dados direto do seu server.js local (Sem expor credenciais)
+async function renderizarVoos() {
+    const containerVoos = document.getElementById('lista-voos-dinamica');
+    try {
+        const response = await fetch('/api/voos');
+        const voos = await response.json();
+        
+        if (!voos.length) {
+            containerVoos.innerHTML = `<p style="color: #94a3b8;">Nenhum voo disponível no momento.</p>`;
+            return;
+        }
+
+        containerVoos.innerHTML = voos.map(voo => `
+            <div class="ticket-card">
+                <div class="ticket-route">
+                    <div class="route-airport">
+                        <h3>${voo.origem_codigo}</h3>
+                        <p>${voo.origem_cidade}</p>
+                    </div>
+                    <div class="route-line">
+                        <i class="fa-solid fa-plane"></i>
+                    </div>
+                    <div class="route-airport" style="text-align: right;">
+                        <h3>${voo.destino_codigo}</h3>
+                        <p>${voo.destino_cidade}</p>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <div>
+                        <span style="font-size: 0.8rem; color: #94a3b8;">Operadora:</span>
+                        <strong style="display: block; font-size: 0.9rem;">${voo.companhia}</strong>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.75rem; color: #94a3b8; text-decoration: line-through; display:block;">R$ ${voo.preco_antigo}</span>
+                        <strong style="color: var(--sun-yellow); font-size: 1.3rem;">R$ ${voo.preco_atual}</strong>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        containerVoos.innerHTML = `<p style="color: #ef4444;">Erro ao sincronizar voos com o servidor.</p>`;
+    }
+}
+
+async function renderizarPromocoes() {
+    const containerPromos = document.getElementById('lista-promos-dinamica');
+    try {
+        const response = await fetch('/api/promocoes');
+        const promos = await response.json();
+
+        if (!promos.length) {
+            containerPromos.innerHTML = `<p style="color: #94a3b8;">Nenhum alerta relâmpago ativo.</p>`;
+            return;
+        }
+
+        containerPromos.innerHTML = promos.map(p => `
+            <div class="promo-banner">
+                <span class="promo-tag">Fogo</span>
+                <div style="flex: 1;">
+                    <h4 style="margin: 0; font-size: 1rem;">${p.titulo}</h4>
+                    <p style="margin: 2px 0 0 0; font-size: 0.85rem; color: #cbd5e1;">${p.descricao}</p>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.75rem; color: var(--sun-yellow); font-weight: bold;">CUPOM:</span>
+                    <code style="display:block; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px;">${p.cupom_codigo}</code>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        containerPromos.innerHTML = `<p style="color: #ef4444;">Erro ao sincronizar alertas.</p>`;
+    }
+}
+
+        // 5. Puxa o link do WhatsApp configurado no painel Admin do LocalStorage
+        function loadLinksSuporteAdmin() {
+            const liveWhats = localStorage.getItem('admin_whatsapp_link') || 'https://wa.me/5500000000000';
+            document.getElementById('nav-btn-suporte').setAttribute('href', liveWhats);
+        }
+
+        // 6. Finalizar Sessão
+        async function deslogarCliente() {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
+    </script>
+    <script src="../js/config.js"></script>
+</body>
+</html>

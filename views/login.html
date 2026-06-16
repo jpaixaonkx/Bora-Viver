@@ -44,6 +44,82 @@
             </a>
         </div>
     </div>
+    <script>
+        // ==========================================================================
+// LÓGICA DE AUTENTICAÇÃO E DIRECIONAMENTO - SEM ALTERAÇÃO VISUAL
+// ==========================================================================
+
+// Credenciais de conexão com o banco
+const SUPABASE_URL = "https://uwslswyfgldimziklonb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PY98ZRigGjq79YtgiVjMUA_TXOiVhan"; 
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function executarLogin(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const msgErro = document.getElementById('error-message');
+    const btnSubmit = document.getElementById('btn-submit-login');
+
+    // Reseta mensagens de erro e altera o estado do botão mantendo o padrão do app
+    if (msgErro) msgErro.style.display = 'none';
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        const btnText = btnSubmit.querySelector('.btn-text');
+        if (btnText) btnText.innerText = "Autenticando...";
+    }
+
+    try {
+        // 1. Faz a requisição de login no Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) throw error;
+
+        const usuario = data.user;
+
+        // 2. Aciona o gatilho visual do avião 3D configurado anteriormente
+        if (typeof decolarAviao === "function") {
+            decolarAviao();
+        }
+
+        // 3. Roteamento de Acesso Inteligente após o tempo da animação do avião
+        setTimeout(() => {
+            if (usuario.email === "BoraViver@gmail.com") {
+                // Se for o e-mail master informado, vai para a área administrativa
+                window.location.href = "admin.html";
+            } else {
+                // Se for qualquer outro e-mail de cliente, vai para o painel de cliente
+                window.location.href = "views/cliente.html";
+            }
+        }, 850); // Tempo sincronizado com o disparo do avião cruzando a tela
+
+    } catch (err) {
+        // Retorna o botão ao estado original em caso de falha nas credenciais
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            const btnText = btnSubmit.querySelector('.btn-text');
+            if (btnText) btnText.innerText = "Entrar";
+        }
+        
+        if (msgErro) {
+            msgErro.innerText = err.message === "Invalid login credentials" 
+                ? "E-mail ou senha incorretos. Tente novamente." 
+                : err.message;
+            msgErro.style.display = 'block';
+        }
+    }
+}
+
+// Vincula a função ao formulário existente mantendo a estrutura original do seu HTML
+const loginForm = document.getElementById('login-form');
+if (loginForm) {
+    loginForm.addEventListener('submit', executarLogin);
+}
+    </script>
 
 </body>
 </html>

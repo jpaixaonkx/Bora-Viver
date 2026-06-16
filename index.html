@@ -15,8 +15,6 @@
 </head>
 <body>
 
-    <div id="canvas-container3d"></div>
-
     <div class="app-container">
         
         <main class="main-landing">
@@ -26,18 +24,20 @@
                     <img src="public/assets/images/logo.png" alt="Bora Viver Viagens" class="logo-3d-effect">
                 </div>
 
+                <div id="canvas-container3d"></div>
+
                 <section class="hero-section">
                     <h1 class="fade-in">Para onde você quer <span class="highlight-text">viver</span> hoje?</h1>
                     <p class="subtitle">Passagens aéreas, hospedagens e pacotes com a tecnologia que acompanha o seu ritmo.</p>
                     
                     <div class="cta-group">
-    <a href="views/cadastro.html" class="btn-floating btn-primary">
-        <i class="fa-solid fa-user-plus"></i> Criar Conta
-    </a>
-    <a href="views/login.html" class="btn-floating btn-secondary">
-        <i class="fa-solid fa-key"></i> Fazer Login
-    </a>
-</div>
+                        <a href="views/cadastro.html" class="btn-floating btn-primary auth-trigger">
+                            <i class="fa-solid fa-user-plus"></i> Criar Conta
+                        </a>
+                        <a href="views/login.html" class="btn-floating btn-secondary auth-trigger">
+                            <i class="fa-solid fa-key"></i> Fazer Login
+                        </a>
+                    </div>
 
                     <div class="social-links-container">
                         <a href="#" id="home-whatsapp" target="_blank" class="social-icon-btn whatsapp-color" title="Fale Conosco no WhatsApp">
@@ -66,7 +66,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- SINC DE REDES SOCIAIS (ADMIN via localStorage) ---
+            // --- SINCRONIZAÇÃO DE REDES SOCIAIS COM O PAINEL ADMIN ---
             const liveWhats = localStorage.getItem('admin_whatsapp_link');
             const liveInsta = localStorage.getItem('admin_instagram_link');
             const btnWhats = document.getElementById('home-whatsapp');
@@ -77,6 +77,28 @@
 
             if (liveInsta && btnInsta) btnInsta.setAttribute('href', liveInsta);
             else if (btnInsta) btnInsta.setAttribute('href', 'https://instagram.com/boraviver');
+
+
+            // --- DIRECIONAMENTO E ACELERAÇÃO DA DECOLAGEM DO AVIÃO ---
+            const botoesAutenticacao = document.querySelectorAll('.auth-trigger');
+            
+            botoesAutenticacao.forEach(botao => {
+                botao.addEventListener('click', (event) => {
+                    // Previne a mudança brusca de página para que o avião consiga executar o voo
+                    event.preventDefault();
+                    const urlDestino = botao.getAttribute('href');
+
+                    // Executa o disparo dos motores contido na função global do seu animation3d.js
+                    if (typeof decolarAviao === 'function') {
+                        decolarAviao();
+                    }
+
+                    // Aguarda o avião rasgar a tela para a direita e faz o redirecionamento limpo
+                    setTimeout(() => {
+                        window.location.href = urlDestino;
+                    }, 800); // 800ms é a janela perfeita para o efeito de clipping de velocidade
+                });
+            });
         });
     </script>
 </body>
