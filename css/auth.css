@@ -1,0 +1,228 @@
+/* ==========================================================================
+   CSS EXCLUSIVO PARA AS TELAS DE AUTENTICAÇÃO (LOGIN / CADASTRO)
+   ========================================================================== */
+
+:root {
+    /* Gradiente imersivo que simula a transição do céu para o espaço */
+    --bg-gradient: radial-gradient(circle at 50% 30%, #003a4a 0%, #0c141f 70%, #05090f 100%);
+    --bg-card: rgba(13, 27, 38, 0.65);
+    --border-glass: rgba(255, 255, 255, 0.07);
+    --primary: #0082A3;     /* Azul-Petróleo Oficial */
+    --secondary: #B4006E;   /* Rosa/Magenta da Marca */
+    --accent: #FFCC00;      /* Amarelo de Destaque */
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+}
+
+/* Força o conteúdo a ocupar a tela inteira e centraliza o card */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background: var(--bg-gradient);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+/* Container de Segurança para Responsividade */
+.auth-wrapper {
+    width: 100%;
+    max-width: 440px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+/* Card Estilo Vidro Premium (Glassmorphism) */
+.auth-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 28px;
+    padding: 45px 40px;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    /* Animação suave de surgimento */
+    animation: authCardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authCardReveal {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.96); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+/* Logo Superior Interna */
+.auth-logo-box {
+    margin-bottom: 25px;
+}
+.auth-logo-box img {
+    max-width: 150px;
+    height: auto;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+
+/* Cabeçalho de Texto */
+.auth-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+.highlight-text {
+    color: var(--secondary);
+}
+.auth-header p {
+    margin: 0 0 35px 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+/* Estrutura do Formulário */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* Grupos de Input */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.input-group label i {
+    color: var(--primary);
+    font-size: 0.95rem;
+}
+
+/* Inputs de Texto/Senha */
+.input-group input {
+    background: rgba(8, 17, 26, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 16px;
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    width: 100%;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(8, 17, 26, 0.9);
+    box-shadow: 0 0 0 4px rgba(0, 130, 163, 0.25),
+                0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Espelhamento do Placeholder */
+.input-group input::placeholder {
+    color: #576574;
+}
+
+/* Botões de Ação Principal */
+.btn-auth-action {
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 10px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Estilo do Botão Entrar (Login) */
+.btn-login {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 130, 163, 0.35);
+}
+.btn-login:hover { 
+    background: #0099c2; 
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 130, 163, 0.5);
+}
+.btn-login:active { transform: translateY(-0.5px); }
+
+/* Estilo do Botão Cadastrar (Cadastro) */
+.btn-cadastro {
+    background: var(--secondary);
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(180, 0, 110, 0.35);
+}
+.btn-cadastro:hover { 
+    background: #d60083; 
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(180, 0, 110, 0.5);
+}
+.btn-cadastro:active { transform: translateY(-0.5px); }
+
+/* Links de Alternância no Rodapé */
+.auth-footer {
+    margin-top: 28px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+.auth-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+    margin-left: 4px;
+    transition: color 0.2s ease;
+}
+.auth-footer a:hover { 
+    color: #ffe066;
+    text-decoration: underline; 
+}
+
+/* Botão Flutuante Voltar para a Home */
+.back-to-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.back-to-home i {
+    transition: transform 0.2s ease;
+}
+.back-to-home:hover { 
+    color: #ffffff; 
+}
+.back-to-home:hover i {
+    transform: translateX(-4px); /* Seta faz um leve recuo indicando retorno */
+}

@@ -1,0 +1,258 @@
+/* ==========================================================================
+   CSS EXCLUSIVO DO PAINEL ADMINISTRATIVO (ALTO PADRÃO)
+   ========================================================================== */
+
+:root {
+    --bg-admin: #060d13;
+    --bg-card: rgba(19, 34, 44, 0.6);
+    --border-glass: rgba(255, 255, 255, 0.05);
+    --primary: #0082A3;     /* Azul-Petróleo */
+    --secondary: #B4006E;   /* Rosa/Magenta */
+    --accent: #FFCC00;      /* Amarelo Sol */
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+}
+
+body.admin-dashboard {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-admin);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* --- MENU LATERAL FLUTUANTE PREMIUM (GLASSMORPHISM) --- */
+.sidebar-floating {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    bottom: 20px;
+    width: 280px;
+    background: rgba(13, 27, 38, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    border-radius: 24px;
+    z-index: 999;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* Sombra Profunda de Alto Padrão */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 
+                0 4px 12px rgba(0, 130, 163, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-header {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border-glass);
+    margin-bottom: 25px;
+}
+
+.sidebar-header img {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Itens do Menu Lateral */
+.admin-menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-nav-link i {
+    font-size: 1.2rem;
+    width: 24px;
+}
+
+/* Estados Ativos e Hover Customizados */
+.admin-nav-link:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateX(4px);
+}
+
+.admin-nav-link.active {
+    color: var(--text-main);
+    background: linear-gradient(135deg, rgba(0, 130, 163, 0.2) 0%, rgba(180, 0, 110, 0.1) 100%);
+    border-left: 4px solid var(--primary);
+    box-shadow: 0 8px 20px rgba(0, 130, 163, 0.15);
+}
+
+.admin-nav-link.logout {
+    margin-top: auto;
+    color: #ff4d6d;
+}
+.admin-nav-link.logout:hover {
+    background: rgba(255, 77, 109, 0.1);
+}
+
+/* --- CONTAINER DE CONTEÚDO PRINCIPAL --- */
+.admin-wrapper {
+    margin-left: 320px; /* Alinhamento correto contando com o menu flutuante + espaçamento */
+    padding: 40px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Controle de Exibição das Abas */
+.admin-section-view {
+    display: none;
+}
+.admin-section-view.active-view {
+    display: block;
+    animation: fadeInView 0.4s ease-out;
+}
+
+@keyframes fadeInView {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- CARDS EM TEMPO REAL (DASHBOARD) --- */
+.realtime-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.realtime-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.realtime-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+}
+.card-blue::before { background: var(--primary); }
+.card-magenta::before { background: var(--secondary); }
+.card-yellow::before { background: var(--accent); }
+
+.realtime-card i { font-size: 2.2rem; }
+.card-blue i { color: var(--primary); }
+.card-magenta i { color: var(--secondary); }
+.card-yellow i { color: var(--accent); }
+
+.card-data h3 { margin: 0 0 5px 0; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; }
+.card-data p { margin: 0; font-size: 1.8rem; font-weight: 800; }
+
+/* --- PLANILHA / TABELA FINANCEIRA DE ALTO PADRÃO --- */
+.table-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    padding: 20px;
+    overflow-x: auto;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.admin-table th {
+    padding: 15px 18px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.admin-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    font-size: 0.95rem;
+}
+
+.badge-status {
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.status-success { background: rgba(0, 163, 100, 0.15); color: #00ff9d; }
+
+/* --- SEÇÃO BUSCA PORTAIS (PASSAGENS/HOSPEDAGENS) --- */
+.search-portal-box {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.admin-input {
+    flex-grow: 1;
+    background: #0d1b26;
+    border: 1px solid var(--border-glass);
+    padding: 14px 20px;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+}
+
+.admin-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-btn:hover { background: #00a0c7; }
+
+/* --- FORMULÁRIOS DE CONFIGURAÇÃO EM TEMPO REAL --- */
+.config-group-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.config-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.config-row label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}

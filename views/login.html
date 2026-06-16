@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Bora Viver Viagens</title>
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            
+            <div class="auth-logo-box">
+                <img src="../public/assets/images/logo.png" alt="Bora Viver Viagens">
+            </div>
+
+            <div class="auth-header">
+                <h2>Bem-vindo de <span class="highlight-text">Volta</span></h2>
+                <p>Acesse sua conta para gerenciar suas reservas em tempo real.</p>
+            </div>
+
+            <form class="auth-form" onsubmit="event.preventDefault(); alert('Integração de Login Pronta!');">
+                <div class="input-group">
+                    <label for="login-email"><i class="fa-solid fa-envelope"></i> E-mail</label>
+                    <input type="email" id="login-email" placeholder="seuemail@exemplo.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="login-senha"><i class="fa-solid fa-lock"></i> Senha</label>
+                    <input type="password" id="login-senha" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-auth-action btn-login">Entrar</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
+            </div>
+
+            <a href="index.html" class="back-to-home">
+                <i class="fa-solid fa-arrow-left-long"></i> Voltar para a página inicial
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

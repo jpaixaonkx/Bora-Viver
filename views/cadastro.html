@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - Bora Viver Viagens</title>
+   <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            
+            <div class="auth-logo-box">
+                <img src="../public/assets/images/logo.png" alt="Bora Viver Viagens">
+            </div>
+
+            <div class="auth-header">
+                <h2>Crie sua <span class="highlight-text">Conta</span></h2>
+                <p>Preencha os dados e tenha acesso a tarifas e roteiros exclusivos.</p>
+            </div>
+
+            <form class="auth-form" onsubmit="event.preventDefault(); alert('Integração de Cadastro Pronta!');">
+                <div class="input-group">
+                    <label for="cad-nome"><i class="fa-solid fa-user"></i> Nome Completo</label>
+                    <input type="text" id="cad-nome" placeholder="Seu nome completo" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="cad-email"><i class="fa-solid fa-envelope"></i> E-mail</label>
+                    <input type="email" id="cad-email" placeholder="seuemail@exemplo.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="cad-senha"><i class="fa-solid fa-lock"></i> Senha</label>
+                    <input type="password" id="cad-senha" placeholder="No mínimo 6 dígitos" required>
+                </div>
+
+                <button type="submit" class="btn-auth-action btn-cadastro">Cadastrar</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Já possui cadastro? <a href="login.html">Fazer Login</a></p>
+            </div>
+
+            <a href="index.html" class="back-to-home">
+                <i class="fa-solid fa-arrow-left-long"></i> Voltar para a página inicial
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

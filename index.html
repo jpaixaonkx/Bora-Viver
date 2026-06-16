@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bora Viver Viagens - Viva Experiências</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+    <div id="canvas-container3d"></div>
+
+    <div class="app-container">
+        
+        <main class="main-landing">
+            <div class="central-content">
+                
+                <div class="logo-main-container">
+                    <img src="public/assets/images/logo.png" alt="Bora Viver Viagens" class="logo-3d-effect">
+                </div>
+
+                <section class="hero-section">
+                    <h1 class="fade-in">Para onde você quer <span class="highlight-text">viver</span> hoje?</h1>
+                    <p class="subtitle">Passagens aéreas, hospedagens e pacotes com a tecnologia que acompanha o seu ritmo.</p>
+                    
+                    <div class="cta-group">
+    <a href="views/cadastro.html" class="btn-floating btn-primary">
+        <i class="fa-solid fa-user-plus"></i> Criar Conta
+    </a>
+    <a href="views/login.html" class="btn-floating btn-secondary">
+        <i class="fa-solid fa-key"></i> Fazer Login
+    </a>
+</div>
+
+                    <div class="social-links-container">
+                        <a href="#" id="home-whatsapp" target="_blank" class="social-icon-btn whatsapp-color" title="Fale Conosco no WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" id="home-instagram" target="_blank" class="social-icon-btn instagram-color" title="Siga-nos no Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="scroll-spacing">
+                    <div class="info-card">
+                        <i class="fa-solid fa-plane-departure"></i>
+                        <h3>Análise de Mercado em Tempo Real</h3>
+                        <p>Conectado aos maiores hubs de turismo para garantir a melhor tarifa sem exceções.</p>
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+
+    </div>
+
+    <script src="js/animation3d.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- SINC DE REDES SOCIAIS (ADMIN via localStorage) ---
+            const liveWhats = localStorage.getItem('admin_whatsapp_link');
+            const liveInsta = localStorage.getItem('admin_instagram_link');
+            const btnWhats = document.getElementById('home-whatsapp');
+            const btnInsta = document.getElementById('home-instagram');
+
+            if (liveWhats && btnWhats) btnWhats.setAttribute('href', liveWhats);
+            else if (btnWhats) btnWhats.setAttribute('href', 'https://wa.me/5500000000000');
+
+            if (liveInsta && btnInsta) btnInsta.setAttribute('href', liveInsta);
+            else if (btnInsta) btnInsta.setAttribute('href', 'https://instagram.com/boraviver');
+        });
+    </script>
+</body>
+</html>

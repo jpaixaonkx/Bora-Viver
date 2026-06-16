@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin - Bora Viver Viagens</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-dashboard">
+
+    <aside class="sidebar-floating">
+        <div class="sidebar-header">
+            <img src="../public/assets/images/logo.png" alt="Bora Viver Viagens">
+        </div>
+        
+        <nav class="admin-menu-nav">
+            <div class="admin-nav-link active" data-tab="dashboard">
+                <i class="fa-solid fa-chart-line"></i> <span>Dashboard</span>
+            </div>
+            <div class="admin-nav-link" data-tab="financeiro">
+                <i class="fa-solid fa-receipt"></i> <span>Financeiro Real</span>
+            </div>
+            <div class="admin-nav-link" data-tab="portais">
+                <i class="fa-solid fa-plane-up"></i> <span>Passagens & Hoteis</span>
+            </div>
+            <div class="admin-nav-link" data-tab="configuracoes">
+                <i class="fa-solid fa-sliders"></i> <span>Configurações</span>
+            </div>
+            
+            <a href="../index.html" class="admin-nav-link logout">
+                <i class="fa-solid fa-power-off"></i> <span>Sair do Painel</span>
+            </a>
+        </nav>
+    </aside>
+
+    <div class="admin-wrapper">
+        
+        <section id="dashboard" class="admin-section-view active-view">
+            <h2>Métricas em Tempo Real <span style="font-size:0.9rem; color:#00ff9d;">● Supabase Connected</span></h2>
+            <div class="realtime-grid">
+                <div class="realtime-card card-blue">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                    <div class="card-data">
+                        <h3>Clientes Atendidos</h3>
+                        <p id="live-clientes">0</p>
+                    </div>
+                </div>
+                <div class="realtime-card card-magenta">
+                    <i class="fa-solid fa-ticket"></i>
+                    <div class="card-data">
+                        <h3>Passagens Vendidas</h3>
+                        <p id="live-passagens">0</p>
+                    </div>
+                </div>
+                <div class="realtime-card card-yellow">
+                    <i class="fa-solid fa-hotel"></i>
+                    <div class="card-data">
+                        <h3>Hospedagens Clientes</h3>
+                        <p id="live-hospedagens">0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="financeiro" class="admin-section-view">
+            <h2>Resumo Analítico de Vendas</h2>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID Venda</th>
+                            <th>Cliente</th>
+                            <th>Produto / Serviço</th>
+                            <th>Valor Total</th>
+                            <th>Status Sync</th>
+                        </tr>
+                    </thead>
+                    <tbody id="financeiro-rows-live">
+                        <tr>
+                            <td>#BVV-9841</td>
+                            <td>Carlos Eduardo</td>
+                            <td>Pacote Completo - Maldivas</td>
+                            <td>R$ 14.250,00</td>
+                            <td><span class="badge-status status-success">Realtime</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="portais" class="admin-section-view">
+            <h2>Pesquisa Integrada de Tarifas Hub</h2>
+            <div class="search-portal-box">
+                <input type="text" class="admin-input" id="searchQuery" placeholder="Para onde o cliente deseja voar? (Ex: Paris)">
+                <button class="admin-btn" id="btnSearchPortals">Buscar Portais</button>
+            </div>
+            <div id="portals-results-container">
+                </div>
+        </section>
+
+        <section id="configuracoes" class="admin-section-view">
+            <h2>Gerenciamento Operacional do App</h2>
+            
+            <div class="config-group-box">
+                <h3>📢 Promoções no App (Aparece no Painel de Usuário)</h3>
+                <div class="config-row">
+                    <label>Título do Banner Promocional</label>
+                    <input type="text" class="admin-input" id="promoTitle" placeholder="Ex: Cupom VIVER10 - 10% OFF em Resorts">
+                </div>
+                <button class="admin-btn" id="btnSavePromo">Atualizar Promoção</button>
+            </div>
+
+            <div class="config-group-box">
+                <h3>🔗 Redes Sociais Integradas (Atualiza Contatos da Home)</h3>
+                <div class="config-row">
+                    <label>Link Completo do WhatsApp</label>
+                    <input type="url" class="admin-input" id="linkWhats" placeholder="https://wa.me/55...">
+                </div>
+                <div class="config-row">
+                    <label>Link Completo do Instagram</label>
+                    <input type="url" class="admin-input" id="linkInsta" placeholder="https://instagram.com/...">
+                </div>
+                <button class="admin-btn" id="btnSaveSocial">Sincronizar Canais</button>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="../js/admin.js"></script>
+</body>
+</html>
