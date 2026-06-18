@@ -63,59 +63,63 @@
     </div>
 
     <script>
-        // Configurações de Conexão com o Supabase
-        const SUPABASE_URL = "https://uwslswyfgldimziklonb.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_PY98ZRigGjq79YtgiVjMUA_TXOiVhan"; 
+    const SUPABASE_URL = "https://uwslswyfgldimziklonb.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_PY98ZRigGjq79YtgiVjMUA_TXOiVhan"; 
+    
+    // Inicialização unificada e segura para CDN
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function executarCadastro(event) {
+        // Garante o bloqueio imediato do recarregamento da página
+        event.preventDefault();
+
+        const nomeInput = document.getElementById('cad-nome');
+        const emailInput = document.getElementById('cad-email');
+        const senhaInput = document.getElementById('cad-senha');
+        const statusBox = document.getElementById('mensagem-status');
+        const btnAcao = document.getElementById('btn-cadastrar');
+
+        if (statusBox) statusBox.style.display = 'none';
         
-        // CORREÇÃO DA INICIALIZAÇÃO: Chamando o construtor correto da biblioteca global (Caixa Alta)
-        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        async function executarCadastro(event) {
-            event.preventDefault();
-
-            const nome = document.getElementById('cad-nome').value.trim();
-            const email = document.getElementById('cad-email').value.trim();
-            const senha = document.getElementById('cad-senha').value;
-            const statusBox = document.getElementById('mensagem-status');
-            const btnAcao = document.getElementById('btn-cadastrar');
-
-            // Configurações iniciais de envio
-            statusBox.style.display = 'none';
+        if (btnAcao) {
             btnAcao.disabled = true;
             btnAcao.innerText = "Criando conta...";
+        }
 
-            try {
-                // 1. Cadastra o cliente no módulo de autenticação do Supabase
-                const { data, error } = await supabase.auth.signUp({
-                    email: email,
-                    password: senha,
-                    options: {
-                        data: {
-                            full_name: nome
-                        }
+        try {
+            // 1. Envia para o Authentication do Supabase
+            const { data, error } = await supabase.auth.signUp({
+                email: emailInput.value.trim(),
+                password: senhaInput.value,
+                options: {
+                    data: {
+                        full_name: nomeInput.value.trim()
                     }
-                });
+                }
+            });
 
-                if (error) throw error;
+            if (error) throw error;
 
-                // 2. Feedback de Sucesso
+            if (statusBox) {
                 statusBox.style.backgroundColor = "rgba(16, 185, 129, 0.2)";
                 statusBox.style.color = "#10b981"; 
                 statusBox.innerText = "Cadastro realizado! Redirecionando...";
                 statusBox.style.display = 'block';
+            }
 
-                // 3. Redireciona o usuário (Corrigido o caminho já que está na pasta views)
-                setTimeout(() => {
-                    window.location.href = "cliente.html";
-                }, 1500);
+            setTimeout(() => {
+                window.location.href = "cliente.html";
+            }, 1500);
 
-            } catch (err) {
-                console.error("Erro no cadastro:", err);
-                
-                // Restaura o botão ao estado original em caso de falha
+        } catch (err) {
+            console.error("Erro capturado no Cadastro:", err);
+            
+            if (btnAcao) {
                 btnAcao.disabled = false;
                 btnAcao.innerText = "Cadastrar";
-                
+            }
+            
+            if (statusBox) {
                 statusBox.style.backgroundColor = "rgba(239, 68, 68, 0.15)";
                 statusBox.style.color = "#ef4444"; 
                 
@@ -127,8 +131,20 @@
                     statusBox.innerText = err.message;
                 }
                 statusBox.style.display = 'block';
+            } else {
+                alert("Erro no cadastro: " + err.message);
             }
         }
-    </script>
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('cadastro-form') || document.querySelector('.auth-form');
+        if (form) {
+            // Remove o atributo onsubmit antigo se houver para evitar conflitos no Netlify
+            form.removeAttribute('onsubmit'); 
+            form.addEventListener('submit', executarCadastro);
+        }
+    });
+</script>
 </body>
 </html>
