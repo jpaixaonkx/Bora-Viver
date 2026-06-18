@@ -8,12 +8,75 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+
+    <style>
+        /* Estilização dos três risquinhos: Transparente com degradê Azul e Rosa */
+        .sidebar-header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding-bottom: 15px;
+        }
+        
+        .menu-toggle-trigger {
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent; /* Transparente */
+            border: 2px solid #00d2ff; /* Borda inicial Azul */
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle-trigger i {
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #00d2ff, #ff007f); /* Azul e Rosa */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle-trigger:hover {
+            border-color: #ff007f; /* Borda muda para Rosa no Hover */
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+        }
+
+        /* Garantia de transição suave para o menu colapsar corretamente */
+        .sidebar-floating {
+            transition: width 0.3s ease-in-out !important;
+        }
+        .sidebar-floating.collapsed {
+            width: 80px !important;
+        }
+        .sidebar-floating.collapsed .sidebar-header img,
+        .sidebar-floating.collapsed nav span {
+            display: none !important;
+        }
+        .sidebar-floating.collapsed .menu-toggle-trigger {
+            margin: 0 auto;
+        }
+        .admin-wrapper {
+            transition: margin-left 0.3s ease-in-out !important;
+        }
+        .admin-wrapper.expanded {
+            margin-left: 80px !important;
+        }
+    </style>
 </head>
 <body class="admin-dashboard">
 
-    <aside class="sidebar-floating">
+    <aside class="sidebar-floating" id="sidebarMenu">
         <div class="sidebar-header">
-            <img src="../public/assets/images/logo.png" alt="Bora Viver Viagens">
+            <img src="../public/assets/images/logo.png" alt="Bora Viver Viagens" style="max-width: 130px;">
+            <div id="menuToggleBtn" class="menu-toggle-trigger">
+                <i class="fa-solid fa-bars"></i>
+            </div>
         </div>
         
         <nav class="admin-menu-nav">
@@ -30,13 +93,13 @@
                 <i class="fa-solid fa-sliders"></i> <span>Configurações</span>
             </div>
             
-            <button href="../index.html" id="btn-logout" class="admin-nav-link logout" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
+            <button id="btn-logout" class="admin-nav-link logout" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
                 <i class="fa-solid fa-power-off"></i> <span>Sair do Painel</span>
             </button>
         </nav>
     </aside>
 
-    <div class="admin-wrapper">
+    <div class="admin-wrapper" id="mainAdminContent">
         
         <section id="dashboard" class="admin-section-view active-view">
             <h2>Métricas em Tempo Real <span style="font-size:0.9rem; color:#00ff9d;">● Supabase Connected</span></h2>
@@ -131,26 +194,33 @@
     <script src="../js/admin.js"></script>
 
     <script>
-        // Configurações de Conexão com o Supabase
-        const SUPABASE_URL = "https://phwmvivnrlgucomktgkw.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_wPdVmvf5EzMGCXrjMt0eDQ_qF62zpgS"; 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Puxa o cliente criado globalmente de forma segura
+        const supabase = window.supabaseClient || window.supabase.createClient("https://phwmvivnrlgucomktgkw.supabase.co", "sb_publishable_wPdVmvf5EzMGCXrjMt0eDQ_qF62zpgS");
 
-        // BLOQUEIO DE INVASÃO: Executado imediatamente ao renderizar a página
+        // Lógica local para alternar o menu (garante funcionamento independente)
+        document.getElementById('menuToggleBtn').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebarMenu');
+            const mainContent = document.getElementById('mainAdminContent');
+            if (sidebar && mainContent) {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            }
+        });
+
+        // BLOQUEIO DE INVASÃO
         async function checarAcessoAdmin() {
             const { data: { session } } = await supabase.auth.getSession();
             
             if (!session || session.user.email !== "BoraViver@gmail.com") {
-                console.warn("Acesso negado: Usuário não autenticado como administrador.");
+                console.warn("Acesso negado.");
                 window.location.href = "login.html";
             } else {
-                // Se a sessão for válida e correta, carrega os dados vivos
                 carregarMetricasReais();
             }
         }
         checarAcessoAdmin();
 
-        // 📊 Busca o total de clientes cadastrados no banco em tempo real
+        // 📊 Busca as métricas reais
         async function carregarMetricasReais() {
             try {
                 const { count, error } = await supabase
@@ -160,25 +230,25 @@
                 if (error) throw error;
                 document.getElementById('live-clientes').innerText = count || 0;
             } catch (err) {
-                console.error("Erro ao ler dados da tabela clientes:", err.message);
+                console.error(err.message);
                 document.getElementById('live-clientes').innerText = "Erro Sync";
             }
         }
 
-        // ⚙️ Salva as configurações de promoções no Supabase
+        // ⚙️ Salva promoções
         document.getElementById('btnSavePromo').addEventListener('click', async () => {
             const titulo = document.getElementById('promoTitle').value.trim();
             if(!titulo) return alert("Digite o título do banner.");
 
             const { error } = await supabase
-                .from('promocoes')
+                .from('configuracoes')
                 .upsert({ id: 1, texto_banner: titulo });
 
             if (error) alert("Erro ao salvar: " + error.message);
-            else alert("Banner Promocional atualizado com sucesso!");
+            else alert("Banner Promocional atualizado!");
         });
 
-        // 🔗 Sincroniza links das redes sociais no Supabase
+        // 🔗 Sincroniza redes sociais
         document.getElementById('btnSaveSocial').addEventListener('click', async () => {
             const whats = document.getElementById('linkWhats').value.trim();
             const insta = document.getElementById('linkInsta').value.trim();
@@ -187,14 +257,25 @@
                 .from('configuracoes')
                 .upsert({ id: 1, whatsapp_url: whats, instagram_url: insta });
 
-            if (error) alert("Erro ao sincronizar canais: " + error.message);
-            else alert("Canais de atendimento sincronizados!");
+            if (error) alert("Erro ao sincronizar: " + error.message);
+            else alert("Canais sincronizados com sucesso!");
         });
 
-        // 🚪 Desconexão de Usuário (Logout)
+        // 🚪 Desconexão Total Blindada contra Travamentos
         document.getElementById('btn-logout').addEventListener('click', async () => {
-            await supabase.auth.signOut();
-            window.location.href = "../index.html";
+            try {
+                // Tenta deslogar pelo Supabase Auth
+                await supabase.auth.signOut();
+            } catch (err) {
+                console.error("Erro auth signOut:", err.message);
+            } finally {
+                // Força a limpeza manual de tokens salvos no navegador para deslogar de vez
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Redirecionamento forçado e definitivo para a raiz onde está o seu index.html
+                window.location.href = "../index.html";
+            }
         });
     </script>
 </body>

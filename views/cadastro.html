@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
     
     <style>
         /* Força a aplicação do gradiente moderno diretamente na página */
@@ -31,7 +32,7 @@
                 <p>Preencha os dados e tenha acesso a tarifas e roteiros exclusivos.</p>
             </div>
 
-            <form class="auth-form" id="cadastro-form" onsubmit="executarCadastro(event)">
+            <form class="auth-form" id="cadastro-form">
                 <div class="input-group">
                     <label for="cad-nome"><i class="fa-solid fa-user"></i> Nome Completo</label>
                     <input type="text" id="cad-nome" placeholder="Seu nome completo" required>
@@ -63,14 +64,10 @@
     </div>
 
     <script>
-    const SUPABASE_URL = "https://phwmvivnrlgucomktgkw.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_wPdVmvf5EzMGCXrjMt0eDQ_qF62zpgS"; 
-    
-    // Inicialização unificada e segura para CDN
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Correção: Puxa o cliente criado globalmente de forma segura pelo config.js
+    const supabase = window.supabaseClient || window.supabase.createClient("https://phwmvivnrlgucomktgkw.supabase.co", "sb_publishable_wPdVmvf5EzMGCXrjMt0eDQ_qF62zpgS");
 
     async function executarCadastro(event) {
-        // Garante o bloqueio imediato do recarregamento da página
         event.preventDefault();
 
         const nomeInput = document.getElementById('cad-nome');
@@ -138,10 +135,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('cadastro-form') || document.querySelector('.auth-form');
+        const form = document.getElementById('cadastro-form');
         if (form) {
-            // Remove o atributo onsubmit antigo se houver para evitar conflitos no Netlify
-            form.removeAttribute('onsubmit'); 
             form.addEventListener('submit', executarCadastro);
         }
     });

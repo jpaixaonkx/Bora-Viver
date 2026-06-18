@@ -12,20 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
             sections.forEach(s => s.classList.remove('active-view'));
 
             link.classList.add('active');
-            document.getElementById(targetTab).classList.add('active-view');
+            
+            const targetSection = document.getElementById(targetTab);
+            if (targetSection) {
+                targetSection.classList.add('active-view');
+            }
         });
     });
-
-    // --- SIMULAÇÃO DE DADOS EM TEMPO REAL (MOCK PARA CONEXÃO SUPABASE) ---
-    document.getElementById('live-clientes').innerText = "142";
-    document.getElementById('live-passagens').innerText = "57";
-    document.getElementById('live-hospedagens').innerText = "39";
 
     // --- SCRIPT DE BUSCA EM PORTAIS PARCEIROS ---
     const btnSearch = document.getElementById('btnSearchPortals');
     if (btnSearch) {
         btnSearch.addEventListener('click', () => {
-            const query = document.getElementById('searchQuery').value;
+            const query = document.getElementById('searchQuery').value.trim();
             const container = document.getElementById('portals-results-container');
             
             if(!query) {
@@ -44,26 +43,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- SALVAMENTO E SINCRONIZAÇÃO EM TEMPO REAL PARA O INDEX.HTML ---
-    const btnSaveSocial = document.getElementById('btnSaveSocial');
-    if (btnSaveSocial) {
-        btnSaveSocial.addEventListener('click', () => {
-            const whatsapp = document.getElementById('linkWhats').value;
-            const instagram = document.getElementById('linkInsta').value;
+    // --- FUNÇÃO PARA CARREGAR CONFIGURAÇÕES INICIAIS DO BANCO ---
+    // Isso traz do Supabase os valores já salvos e preenche nos inputs automaticamente
+    async function carregarConfiguracoesIniciais() {
+        if (typeof supabase !== 'undefined') {
+            try {
+                const { data, error } = await supabase
+                    .from('configuracoes')
+                    .select('*')
+                    .eq('id', 1)
+                    .single();
 
-            localStorage.setItem('admin_whatsapp_link', whatsapp);
-            localStorage.setItem('admin_instagram_link', instagram);
+                if (error && error.code !== 'PGRST116') throw error; // Ignora se não achar registros
 
-            alert("Canais de contato sincronizados com sucesso em tempo real!");
-        });
+                if (data) {
+                    const promoInput = document.getElementById('promoTitle');
+                    const whatsInput = document.getElementById('linkWhats');
+                    const instaInput = document.getElementById('linkInsta');
+
+                    if (promoInput && data.texto_banner) promoInput.value = data.texto_banner;
+                    if (whatsInput && data.whatsapp_url) whatsInput.value = data.whatsapp_url;
+                    if (instaInput && data.instagram_url) instaInput.value = data.instagram_url;
+                }
+            } catch (err) {
+                console.error("Erro ao carregar dados iniciais no admin.js:", err.message);
+            }
+        }
     }
 
-    const btnSavePromo = document.getElementById('btnSavePromo');
-    if (btnSavePromo) {
-        btnSavePromo.addEventListener('click', () => {
-            const promo = document.getElementById('promoTitle').value;
-            localStorage.setItem('admin_banner_promo', promo);
-            alert("Banner promocional atualizado para todos os usuários!");
-        });
-    }
+    // Executa a carga inicial após 1 segundo para dar tempo do Supabase iniciar no HTML
+    setTimeout(carregarConfiguracoesIniciais, 1000);
 });

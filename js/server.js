@@ -19,11 +19,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 app.use(cors());
 app.use(express.json());
 
-// Servir arquivos estáticos (CSS, JS, Imagens, Modelos 3D)
-// Certifique-se de que suas pastas 'css', 'js' e 'public' estão na raiz ou ajuste os caminhos abaixo
+// CORREÇÃO DE ROTAS ESTÁTICAS: Apontando corretamente para as pastas na raiz
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/views', express.static(path.join(__dirname, 'views')));
 
 // ==========================================================================
 // ROTAS DE PAGINAS (VIEWS)
@@ -32,8 +32,20 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
+});
+
+app.get('/cadastro', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'cadastro.html'));
+});
+
 app.get('/cliente', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'cliente.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'admin.html'));
 });
 
 // ==========================================================================
@@ -59,9 +71,10 @@ app.get('/api/voos', async (req, res) => {
 app.get('/api/promocoes', async (req, res) => {
     try {
         const { data, error } = await supabase
-            .from('promocoes')
-            .select('*')
-            .order('created_at', { ascending: false });
+            .from('configuracoes') // Corrigido para a tabela 'configuracoes' que criamos no SQL unificado
+            .select('texto_banner')
+            .eq('id', 1)
+            .single();
 
         if (error) throw error;
         res.json(data);
