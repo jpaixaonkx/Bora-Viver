@@ -12,10 +12,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        .sky-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Vinculando a imagem diretamente como plano de fundo */
+            background-image: url('fundo.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            
+            /* Reduz um pouco a intensidade da luz da imagem para destacar os textos e botões */
+            filter: brightness(0.75); 
+            
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .logo-main-container {
+            /* Sombra projetada para destacar a logo por cima do relevo das nuvens */
+            filter: drop-shadow(0px 12px 24px rgba(0, 0, 0, 0.4));
+        }
+    </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <!-- CAMADA 1: CENÁRIO DA IMAGEM ATUALIZADO -->
+    <div class="sky-background"></div>
+
+    <div id="canvas-container3d"></div>
+
+    <div class="app-container" style="position: relative; z-index: 10;">
         
         <main class="main-landing">
             <div class="central-content">
@@ -24,17 +55,15 @@
                     <img src="public/assets/images/logo.png" alt="Bora Viver Viagens" class="logo-3d-effect">
                 </div>
 
-                <div id="canvas-container3d"></div>
-
                 <section class="hero-section">
                     <h1 class="fade-in">Para onde você quer <span class="highlight-text">viver</span> hoje?</h1>
                     <p class="subtitle">Passagens aéreas, hospedagens e pacotes com a tecnologia que acompanha o seu ritmo.</p>
                     
-                    <div class="cta-group">
-                        <a href="views/cadastro.html" class="btn-floating btn-primary auth-trigger">
+                    <div class="cta-group" style="position: relative; z-index: 20;">
+                        <a href="views/cadastro.html" data-target="views/cadastro.html" class="btn-floating btn-primary auth-trigger">
                             <i class="fa-solid fa-user-plus"></i> Criar Conta
                         </a>
-                        <a href="views/login.html" class="btn-floating btn-secondary auth-trigger">
+                        <a href="views/login.html" data-target="views/login.html" class="btn-floating btn-secondary auth-trigger">
                             <i class="fa-solid fa-key"></i> Fazer Login
                         </a>
                     </div>
@@ -66,40 +95,25 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- SINCRONIZAÇÃO DE REDES SOCIAIS COM O PAINEL ADMIN ---
-            const liveWhats = localStorage.getItem('admin_whatsapp_link');
-            const liveInsta = localStorage.getItem('admin_instagram_link');
-            const btnWhats = document.getElementById('home-whatsapp');
-            const btnInsta = document.getElementById('home-instagram');
+            const botoesTransicao = document.querySelectorAll('.auth-trigger');
 
-            if (liveWhats && btnWhats) btnWhats.setAttribute('href', liveWhats);
-            else if (btnWhats) btnWhats.setAttribute('href', 'https://wa.me/5500000000000');
-
-            if (liveInsta && btnInsta) btnInsta.setAttribute('href', liveInsta);
-            else if (btnInsta) btnInsta.setAttribute('href', 'https://instagram.com/boraviver');
-
-
-            // --- DIRECIONAMENTO E ACELERAÇÃO DA DECOLAGEM DO AVIÃO ---
-            const botoesAutenticacao = document.querySelectorAll('.auth-trigger');
-            
-            botoesAutenticacao.forEach(botao => {
+            botoesTransicao.forEach(botao => {
                 botao.addEventListener('click', (event) => {
-                    // Previne a mudança brusca de página para que o avião consiga executar o voo
-                    event.preventDefault();
-                    const urlDestino = botao.getAttribute('href');
+                    event.preventDefault(); 
+                    
+                    const destino = botao.getAttribute('data-target');
 
-                    // Executa o disparo dos motores contido na função global do seu animation3d.js
-                    if (typeof decolarAviao === 'function') {
+                    if (typeof decolarAviao === "function") {
                         decolarAviao();
                     }
 
-                    // Aguarda o avião rasgar a tela para a direita e faz o redirecionamento limpo
                     setTimeout(() => {
-                        window.location.href = urlDestino;
-                    }, 800); // 800ms é a janela perfeita para o efeito de clipping de velocidade
+                        window.location.href = destino;
+                    }, 850); 
                 });
             });
         });
     </script>
+    
 </body>
 </html>

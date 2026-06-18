@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. RESET, FUNDO DO APP E REGRAS DE SCROLL (RECALIBRADO)
+   1. RESET, FUNDO DO APP E REGRAS DE SCROLL (GRADIENTE MODERNO)
    ========================================================================== */
 html, body {
     margin: 0;
@@ -7,11 +7,19 @@ html, body {
     width: 100%;
     min-height: 100%;
     box-sizing: border-box;
-    /* Fundo degradê radial original com as cores da marca */
-    background: radial-gradient(circle at 50% 30%, #003a4a 0%, #12000b 100%);
+    
+    /* GRADIENTE ATUALIZADO: Fundo padrão moderno (azul para branco) para as páginas de Login/Cadastro */
+    background: linear-gradient(135deg, #2b5876 0%, #4e4376 50%, #eef2f3 100%);
+    background-attachment: fixed;
+    
     /* Permitir scroll vertical natural agora que o app está integrado */
     overflow-x: hidden;
     overflow-y: auto; 
+}
+
+/* Regra isoladora: Se for a página index (que tem a div do cenário), limpa o fundo para revelar a imagem */
+body:has(.sky-background) {
+    background: transparent !important;
 }
 
 /* Container do Mestre */
@@ -19,34 +27,35 @@ html, body {
     width: 100%;
     height: 100%;
     color: #ffffff;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* ==========================================================================
-   2. CONTAINER DO CANVAS THREE.JS (CORRIGIDO PARA O FLUXO CENTRAL)
+   2. CONTAINER DO CANVAS THREE.JS (CORRIGIDO E UNIFICADO)
    ========================================================================== */
 #canvas-container3d {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 320px; /* Altura ideal para o avião flutuar entre a logo e o texto */
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 5;
-    pointer-events: none; /* Garante que cliques passem caso a caixa intercale o texto */
+    height: 100vh;
+    background: transparent !important; /* Permite ver o céu atrás */
+    z-index: 1; /* Fica acima do céu, mas atrás dos textos/botões */
+    
+    /* O mouse ignora o container do avião e clica no que está atrás */
+    pointer-events: none; 
 }
 
 /* ==========================================================================
-   3. LOGOTIPO INTEGRADA AO FLUXO CENTRAL
+   3. LOGOTIPO INTEGRADA AO FLUXO CENTRAL (EFEITO ULTRA-MODERNO)
    ========================================================================== */
 .logo-main-container {
     width: 100%;
-    max-width: 280px;
+    max-width: 260px;
     display: flex;
     justify-content: center;
-    margin: 0 auto;
-    perspective: 1000px; /* Cria profundidade para o efeito 3D */
+    margin: 0 auto 15px auto;
+    perspective: 1200px; /* Cria profundidade aprimorada para o efeito 3D */
 }
 
 .logo-3d-effect {
@@ -54,203 +63,230 @@ html, body {
     height: auto;
     object-fit: contain;
     /* Inclinação realista simulando profundidade e projeção de sombra */
-    transform: rotateX(10deg) rotateY(-5deg);
+    transform: rotateX(8deg) rotateY(-4deg);
     filter: 
-        drop-shadow(0px 12px 20px rgba(0, 0, 0, 0.7)) 
-        drop-shadow(0px 4px 8px rgba(0, 130, 163, 0.4));
+        drop-shadow(0px 16px 24px rgba(0, 43, 54, 0.35)) 
+        drop-shadow(0px 6px 10px rgba(0, 130, 163, 0.2));
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo-main-container:hover .logo-3d-effect {
+    transform: rotateX(0deg) rotateY(0deg) scale(1.03);
 }
 
 /* ==========================================================================
-   4. LAYOUT DA LANDING PAGE E TEXTOS
+   4. LAYOUT DA LANDING PAGE E TEXTOS (HERO PREMIUM)
    ========================================================================== */
 .main-landing {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 60px; /* Reduzido o padding gigantesco pois o fluxo agora é natural */
+    padding-top: 50px; 
     box-sizing: border-box;
+    position: relative;
+    z-index: 2; /* Mantém os textos e interações acima do fundo e do canvas */
 }
 
 .central-content {
     width: 100%;
-    max-width: 600px;
+    max-width: 650px;
     text-align: center;
-    padding: 20px;
+    padding: 24px;
 }
 
 .hero-section h1 {
-    font-size: 2.3rem;
+    font-size: 2.6rem;
     font-weight: 800;
-    margin-bottom: 12px;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    color: #0c1e29; /* Tom escuro luxuoso para contrastar perfeitamente com o céu claro */
+    text-shadow: 0 2px 10px rgba(253, 236, 236, 0.336);
+    line-height: 1.2;
 }
 
 .highlight-text {
     color: #B4006E; /* Rosa/Magenta vibrante da marca */
+    position: relative;
+    display: inline-block;
 }
 
 .subtitle {
-    color: #cbd5e1;
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 35px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    color: #0f0f0fef;/* Azul escuro acinzentado de alta legibilidade no fundo claro */
+    text-shadow: 0 2px 10px rgba(253, 236, 236, 0.384);
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* ==========================================================================
-   5. BOTÕES FLUTUANTES FORMATADOS COMO LINKS (CTA)
+   5. BOTÕES FLUTUANTES FORMATADOS COMO LINKS (CTA PREMIUM)
    ========================================================================== */
 .cta-group {
     display: flex;
-    gap: 18px;
+    gap: 20px;
     justify-content: center;
-    margin-bottom: 50px;
-    flex-wrap: wrap; /* Evita quebra de layout em celulares antigos */
+    margin-bottom: 55px;
+    flex-wrap: wrap; 
 }
 
 .btn-floating {
-    padding: 15px 32px;
+    padding: 16px 36px;
     border: none;
     border-radius: 50px;
     font-size: 0.95rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     cursor: pointer;
-    
-    /* Correção crucial para links funcionarem como botões físicos */
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     
-    /* Transição elástica de suavidade mecânica no hover */
+    /* Força os botões a aceitarem o clique e ignorarem o bloqueio do Three.js acima deles */
+    pointer-events: auto !important;
+    
+    /* Transição suave e responsiva */
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Botão Primário - Amarelo Sol da Logo */
+/* Botão Primário - Amarelo Sol Intenso com Sombra Projetada */
 .btn-primary {
     background: #FFCC00;
     color: #0b131a;
-    box-shadow: 0 10px 25px rgba(255, 204, 0, 0.45);
+    box-shadow: 0 10px 30px rgba(255, 204, 0, 0.4);
 }
 
 .btn-primary:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 35px rgba(255, 204, 0, 0.6);
+    transform: translateY(-5px);
+    box-shadow: 0 18px 40px rgba(255, 204, 0, 0.55);
     background: #ffe066;
 }
 
-/* Botão Secundário - Rosa/Magenta */
+/* Botão Secundário - Rosa/Magenta Elegante */
 .btn-secondary {
     background: #B4006E;
     color: #ffffff;
-    box-shadow: 0 10px 25px rgba(180, 0, 110, 0.45);
+    box-shadow: 0 10px 30px rgba(180, 0, 110, 0.35);
 }
 
 .btn-secondary:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 35px rgba(180, 0, 110, 0.6);
+    transform: translateY(-5px);
+    box-shadow: 0 18px 40px rgba(180, 0, 110, 0.5);
     background: #d60083;
 }
 
+.btn-floating:active {
+    transform: translateY(-2px);
+}
+
 /* ==========================================================================
-   6. COMPONENTES ADICIONAIS (CARDS DE INFOS PARA SCROLL)
+   6. CARDS DE INFOS (GLASSMORPHISM DE ALTO PADRÃO PARA O FUNDO CLARO)
    ========================================================================== */
 .scroll-spacing {
-    margin-top: 40px;
-    margin-bottom: 80px;
+    margin-top: 30px;
+    margin-bottom: 60px;
     width: 100%;
     display: flex;
     justify-content: center;
 }
 
+/* Reajustado para gerar contraste cristalino por cima do céu ensolarado */
 .info-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); /* Suporte para iOS Safari */
-    padding: 35px 25px;
-    border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 38px 30px;
+    border-radius: 28px;
+    box-shadow: 0 30px 60px rgba(0, 43, 54, 0.1),
+                inset 0 1px 0px rgba(255, 255, 255, 0.5);
     width: 100%;
-    max-width: 500px;
-    transition: transform 0.3s ease;
+    max-width: 480px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .info-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-6px);
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 40px 80px rgba(0, 43, 54, 0.15);
 }
 
 .info-card i {
-    font-size: 2.6rem;
-    color: #0082A3; /* Azul-Petróleo */
-    margin-bottom: 18px;
+    font-size: 2.8rem;
+    color: #0082A3; /* Azul-Petróleo Oficial */
+    margin-bottom: 20px;
     display: inline-block;
+    filter: drop-shadow(0 4px 10px rgba(0, 130, 163, 0.25));
 }
 
 .info-card h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.3rem;
+    margin: 0 0 12px 0;
+    font-size: 1.35rem;
     font-weight: 700;
+    color: #0c1e29;
 }
 
 .info-card p {
     margin: 0;
-    color: #94a3b8;
-    font-size: 0.95rem;
+    color: #475569; /* Cinza slate elegante de excelente contraste */
+    font-size: 0.98rem;
     line-height: 1.6;
 }
 
 /* ==========================================================================
-   7. SEÇÃO DE REDES SOCIAIS PREMIUM (ESPAÇADAS E COM GLOW REALISTA)
+   7. SEÇÃO DE REDES SOCIAIS PREMIUM (GLASS EFFECT INTEGRADO)
    ========================================================================== */
 .social-links-container {
     display: flex;
     justify-content: center;
-    gap: 35px;          /* Afastamento ideal e elegante entre os ícones */
-    margin-top: 40px;   /* Distância generosa dos botões de cima */
-    margin-bottom: 20px;
+    gap: 32px;          
+    margin-top: 35px;   
+    margin-bottom: 25px;
 }
 
 .social-icon-btn {
-    width: 56px;        /* Tamanho ligeiramente maior para melhor clique e presença */
-    height: 56px;
+    width: 54px;        
+    height: 54px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.7rem;  /* Ícone interno realçado e nítido */
-    color: #e2e8f0;     /* Branco fosco elegante em estado normal */
+    font-size: 1.6rem;  
+    color: #334155;     /* Tom escuro suave para o estado padrão */
     text-decoration: none;
     
-    /* Efeito de Vidro Refinado (Glassmorphism) */
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    /* Efeito de Vidro Refinado adequado ao céu diurno */
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 10px 25px rgba(0, 43, 54, 0.08);
     
-    /* Transição suave e elástica para o efeito flutuante */
+    /* Libera o clique também nas redes sociais */
+    pointer-events: auto !important;
+    
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* --- EFEITO REALISTA DO WHATSAPP (COR OFICIAL #25D366) --- */
+/* --- EFEITO REALISTA DO WHATSAPP --- */
 .social-icon-btn.whatsapp-color:hover {
     background: #25D366;
     color: #ffffff;
     border-color: #25D366;
-    transform: translateY(-6px);
-    box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5),
-                0 4px 10px rgba(37, 211, 102, 0.3);
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(37, 211, 102, 0.4);
 }
 
-/* --- EFEITO REALISTA DO INSTAGRAM (GRADIENTE OFICIAL VIBRANTE) --- */
+/* --- EFEITO REALISTA DO INSTAGRAM --- */
 .social-icon-btn.instagram-color:hover {
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     color: #ffffff;
     border-color: transparent;
-    transform: translateY(-6px);
-    box-shadow: 0 15px 30px rgba(220, 39, 67, 0.5),
-                0 4px 10px rgba(204, 35, 102, 0.3);
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(220, 39, 67, 0.35);
 }

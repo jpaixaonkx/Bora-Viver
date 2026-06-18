@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Conta - Bora Viver Viagens</title>
-   <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/auth.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Força a aplicação do gradiente moderno diretamente na página */
+        html, body {
+            background: linear-gradient(135deg, #970377 0%, #5e0137 50%, #1e029b 100%) !important;
+            background-attachment: fixed !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -21,7 +31,7 @@
                 <p>Preencha os dados e tenha acesso a tarifas e roteiros exclusivos.</p>
             </div>
 
-            <form class="auth-form" onsubmit="event.preventDefault(); alert('Integração de Cadastro Pronta!');">
+            <form class="auth-form" id="cadastro-form" onsubmit="executarCadastro(event)">
                 <div class="input-group">
                     <label for="cad-nome"><i class="fa-solid fa-user"></i> Nome Completo</label>
                     <input type="text" id="cad-nome" placeholder="Seu nome completo" required>
@@ -37,18 +47,88 @@
                     <input type="password" id="cad-senha" placeholder="No mínimo 6 dígitos" required>
                 </div>
 
-                <button type="submit" class="btn-auth-action btn-cadastro">Cadastrar</button>
+                <div id="mensagem-status" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 15px; display: none; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; text-align: center;"></div>
+
+                <button type="submit" id="btn-cadastrar" class="btn-auth-action btn-cadastro">Cadastrar</button>
             </form>
 
             <div class="auth-footer">
                 <p>Já possui cadastro? <a href="login.html">Fazer Login</a></p>
             </div>
 
-            <a href="index.html" class="back-to-home">
+            <a href="../index.html" class="back-to-home">
                 <i class="fa-solid fa-arrow-left-long"></i> Voltar para a página inicial
             </a>
         </div>
     </div>
 
+    <script>
+        // Configurações de Conexão com o Supabase
+        const SUPABASE_URL = "https://uwslswyfgldimziklonb.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_PY98ZRigGjq79YtgiVjMUA_TXOiVhan"; 
+        
+        // CORREÇÃO DA INICIALIZAÇÃO: Chamando o construtor correto da biblioteca global (Caixa Alta)
+        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function executarCadastro(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById('cad-nome').value.trim();
+            const email = document.getElementById('cad-email').value.trim();
+            const senha = document.getElementById('cad-senha').value;
+            const statusBox = document.getElementById('mensagem-status');
+            const btnAcao = document.getElementById('btn-cadastrar');
+
+            // Configurações iniciais de envio
+            statusBox.style.display = 'none';
+            btnAcao.disabled = true;
+            btnAcao.innerText = "Criando conta...";
+
+            try {
+                // 1. Cadastra o cliente no módulo de autenticação do Supabase
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: senha,
+                    options: {
+                        data: {
+                            full_name: nome
+                        }
+                    }
+                });
+
+                if (error) throw error;
+
+                // 2. Feedback de Sucesso
+                statusBox.style.backgroundColor = "rgba(16, 185, 129, 0.2)";
+                statusBox.style.color = "#10b981"; 
+                statusBox.innerText = "Cadastro realizado! Redirecionando...";
+                statusBox.style.display = 'block';
+
+                // 3. Redireciona o usuário (Corrigido o caminho já que está na pasta views)
+                setTimeout(() => {
+                    window.location.href = "cliente.html";
+                }, 1500);
+
+            } catch (err) {
+                console.error("Erro no cadastro:", err);
+                
+                // Restaura o botão ao estado original em caso de falha
+                btnAcao.disabled = false;
+                btnAcao.innerText = "Cadastrar";
+                
+                statusBox.style.backgroundColor = "rgba(239, 68, 68, 0.15)";
+                statusBox.style.color = "#ef4444"; 
+                
+                if (err.message.includes("should be at least")) {
+                    statusBox.innerText = "A senha deve conter no mínimo 6 caracteres.";
+                } else if (err.message.includes("already registered")) {
+                    statusBox.innerText = "Este e-mail já está cadastrado no sistema.";
+                } else {
+                    statusBox.innerText = err.message;
+                }
+                statusBox.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>

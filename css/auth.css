@@ -3,8 +3,6 @@
    ========================================================================== */
 
 :root {
-    /* Gradiente imersivo que simula a transição do céu para o espaço */
-    --bg-gradient: radial-gradient(circle at 50% 30%, #003a4a 0%, #0c141f 70%, #05090f 100%);
     --bg-card: rgba(13, 27, 38, 0.65);
     --border-glass: rgba(255, 255, 255, 0.07);
     --primary: #0082A3;     /* Azul-Petróleo Oficial */
@@ -21,7 +19,8 @@ html, body {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    background: var(--bg-gradient);
+    /* Fundo transparente para revelar a camada .sky-background logo atrás */
+    background: transparent;
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
     color: var(--text-main);
     display: flex;
@@ -36,6 +35,7 @@ html, body {
     max-width: 440px;
     padding: 24px;
     box-sizing: border-box;
+    z-index: 2; /* Garante que os inputs fiquem acima do cenário e das nuvens */
 }
 
 /* Card Estilo Vidro Premium (Glassmorphism) */
@@ -224,5 +224,53 @@ html, body {
     color: #ffffff; 
 }
 .back-to-home:hover i {
-    transform: translateX(-4px); /* Seta faz um leve recuo indicando retorno */
+    transform: translateX(-4px);
+}
+
+/* ==========================================================================
+   CÉU REALISTA COM NUVENS EM MOVIMENTO INFINITO (ESQUERDA PARA A DIREITA)
+   ========================================================================== */
+
+.sky-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    
+    /* IMAGEM DO CÉU DE FUNDO (REALISTA EM HIGH DEFINITION) */
+    background-image: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1920&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    z-index: -2; /* Mantém o cenário atrás do canvas 3D e do card */
+    overflow: hidden;
+}
+
+.clouds-moving {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Imagem de nuvens transparentes vetorizadas e repetíveis (Seamless) */
+    background-image: url('https://www.transparenttextures.com/patterns/clouds.png');
+    background-repeat: repeat-x;
+    background-size: cover;
+    opacity: 0.65;
+    z-index: -1;
+    
+    /* Dispara a animação: 40 segundos, linear (constante) e infinita */
+    animation: moverNuvensEsquerdaDireita 40s linear infinite;
+}
+
+/* Engrenagem física do movimento */
+@keyframes moverNuvensEsquerdaDireita {
+    from {
+        background-position: 0px 0px;
+    }
+    to {
+        background-position: 1000px 0px;
+    }
 }

@@ -160,4 +160,5 @@ window.addEventListener('resize', () => {
     renderizador.setSize(container.clientWidth, container.clientHeight);
 });
 
+
 inicializar3D();
