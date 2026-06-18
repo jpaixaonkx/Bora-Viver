@@ -60,82 +60,79 @@
     </div>
 
     <script>
-    // Credenciais de conexão
-    const SUPABASE_URL = "https://uwslswyfgldimziklonb.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_PY98ZRigGjq79YtgiVjMUA_TXOiVhan"; 
-    
-    // Inicialização unificada e segura para CDN
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Credenciais de conexão com o banco
+        const SUPABASE_URL = "https://phwmvivnrlgucomktgkw.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_wPdVmvf5EzMGCXrjMt0eDQ_qF62zpgS"; 
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function executarLogin(event) {
-        // ESSA LINHA TEM QUE SER A PRIMEIRA, para impedir a página de atualizar se algo falhar abaixo
-        event.preventDefault(); 
+        async function executarLogin(event) {
+            // Evita o recarregamento instantâneo da página no Netlify
+            event.preventDefault(); 
 
-        const emailInput = document.getElementById('email') || document.getElementById('login-email');
-        const passwordInput = document.getElementById('password') || document.getElementById('login-senha');
-        const msgErro = document.getElementById('error-message') || document.getElementById('mensagem-status');
-        const btnSubmit = document.getElementById('btn-submit-login');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const msgErro = document.getElementById('error-message');
+            const btnSubmit = document.getElementById('btn-submit-login');
 
-        if (msgErro) msgErro.style.display = 'none';
-        
-        if (!emailInput || !passwordInput) {
-            alert("Erro interno: Campos do formulário não foram encontrados no HTML.");
-            return;
-        }
-
-        if (btnSubmit) {
-            btnSubmit.disabled = true;
-            const btnText = btnSubmit.querySelector('.btn-text') || btnSubmit;
-            btnText.innerText = "Autenticando...";
-        }
-
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: emailInput.value.trim(),
-                password: passwordInput.value
-            });
-
-            if (error) throw error;
-
-            if (typeof decolarAviao === "function") {
-                decolarAviao();
-            }
-
-            setTimeout(() => {
-                if (data.user.email === "BoraViver@gmail.com") {
-                    window.location.href = "admin.html";
-                } else {
-                    window.location.href = "cliente.html";
-                }
-            }, 850);
-
-        } catch (err) {
-            console.error("Erro capturado no Login:", err);
+            if (msgErro) msgErro.style.display = 'none';
             
             if (btnSubmit) {
-                btnSubmit.disabled = false;
-                const btnText = btnSubmit.querySelector('.btn-text') || btnSubmit;
-                btnText.innerText = "Entrar";
+                btnSubmit.disabled = true;
+                const btnText = btnSubmit.querySelector('.btn-text');
+                if (btnText) btnText.innerText = "Autenticando...";
             }
-            
-            if (msgErro) {
-                msgErro.innerText = err.message === "Invalid login credentials" 
-                    ? "E-mail ou senha incorretos. Tente novamente." 
-                    : err.message;
-                msgErro.style.display = 'block';
-            } else {
-                alert("Erro ao entrar: " + err.message);
-            }
-        }
-    }
 
-    // Vinculação segura que funciona com qualquer ID de formulário que você colocou
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('login-form') || document.querySelector('.auth-form');
-        if (form) {
-            form.addEventListener('submit', executarLogin);
+            try {
+                // 1. Faz a requisição de login no Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: emailInput.value.trim(),
+                    password: passwordInput.value
+                });
+
+                if (error) throw error;
+
+                // Gatilho visual opcional do avião da home
+                if (typeof decolarAviao === "function") {
+                    decolarAviao();
+                }
+
+                // 2. REDIRECIONAMENTO COM CAMINHOS CORRIGIDOS (Mesma pasta views/)
+                setTimeout(() => {
+                    if (data.user.email === "BoraViver@gmail.com") {
+                        // Vai para o painel Master Admin
+                        window.location.href = "admin.html";
+                    } else {
+                        // Vai para o painel do Cliente padrão
+                        window.location.href = "cliente.html";
+                    }
+                }, 850); 
+
+            } catch (err) {
+                console.error("Erro capturado no Login:", err);
+                
+                if (btnSubmit) {
+                    btnSubmit.disabled = false;
+                    const btnText = btnSubmit.querySelector('.btn-text');
+                    if (btnText) btnText.innerText = "Entrar";
+                }
+                
+                if (msgErro) {
+                    msgErro.innerText = err.message === "Invalid login credentials" 
+                        ? "E-mail ou senha incorretos. Tente novamente." 
+                        : err.message;
+                    msgErro.style.display = 'block';
+                }
+            }
         }
-    });
-</script>
+
+        // Vincula a escuta do formulário de forma segura após o carregamento da DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', executarLogin);
+            }
+        });
+    </script>
+
 </body>
 </html>
