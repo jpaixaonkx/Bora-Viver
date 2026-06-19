@@ -1,0 +1,8 @@
+:root {
+    --rosa: #e91e63;
+    --azul: #03a9f4;
+}
+
+body { font-family: sans-serif; }
+.btn-admin { background-color: var(--rosa); color: white; }
+.btn-cliente { background-color: var(--azul); color: white; }
